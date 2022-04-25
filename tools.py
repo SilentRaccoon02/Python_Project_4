@@ -1,13 +1,9 @@
 from typing import List, Tuple, overload
-
 from copy import deepcopy
 from math import sqrt
 
-# TODO формула Герона для корня
-
-
 # количество знаков в строковых представлениях
-SIGNS = 4
+SIGNS = 7
 
 
 # класс работает с векторами
@@ -127,6 +123,27 @@ class Vector:
     def __sub__(self, other: 'Vector') -> 'Vector':
         # проверки выполнятся в сложении
         return self + other * float(-1)
+
+    # горизонтальная строка
+    @property
+    def str_h(self) -> str:
+        result = '['
+
+        for i in range(len(self)):
+            result += f'{self[i]:.{SIGNS}f} '
+
+        return result[:-1] + ']'
+
+    # вектор модулей
+    @property
+    def abs(self) -> 'Vector':
+        n = len(self)
+        result = Vector([0 for _ in range(n)])
+
+        for i in range(n):
+            result[i] = abs(self[i])
+
+        return result
 
     # транспонирование
     @property
@@ -348,6 +365,11 @@ class Matrix:
     def __sub__(self, other: 'Matrix') -> 'Matrix':
         # проверки выполнятся в сложении
         return self + other * float(-1)
+
+    # двумерный массив
+    @property
+    def list(self) -> List[List[float]]:
+        return self.__matrix
 
     # транспонирование
     @property

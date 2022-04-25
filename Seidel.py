@@ -1,7 +1,7 @@
+from typing import Tuple
+
 from tools import Matrix, Vector
 import tools
-
-EPS = 0.0001
 
 
 def calc_x_new(c: Matrix, d: Vector, x: Vector) -> Vector:
@@ -23,12 +23,11 @@ def calc_x_new(c: Matrix, d: Vector, x: Vector) -> Vector:
     return x_new
 
 
-def stop(a: Matrix, b: Vector, x: Vector, ) -> bool:
-    return (a * x - b).norm < EPS
+def stop(a: Matrix, b: Vector, x: Vector, eps: float) -> bool:
+    return (a * x - b).norm < eps
 
 
-def seidel(a: Matrix, b: Vector) -> Vector:
-    a, b = tools.permutation(a, b)
+def seidel(a: Matrix, b: Vector, eps: float) -> Tuple:
     b = a.transpose * b
     a = a.transpose * a
 
@@ -47,8 +46,11 @@ def seidel(a: Matrix, b: Vector) -> Vector:
     x = Vector(d)
     x_new = calc_x_new(c, d, x)
 
-    while not stop(a, b, x):
+    k = 0
+    while not stop(a, b, x, eps):
+        k += 1
+
         x = Vector(x_new)
         x_new = calc_x_new(c, d, x)
 
-    return x_new
+    return x_new, k

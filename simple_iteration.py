@@ -1,7 +1,7 @@
+from typing import Tuple
+
 from tools import Matrix, Vector
 import tools
-
-EPS = 0.0001
 
 
 def calc_b(a: Matrix, u: float) -> Matrix:
@@ -10,11 +10,11 @@ def calc_b(a: Matrix, u: float) -> Matrix:
     return e - a * u
 
 
-def stop(norm_b: float, x: Vector, x_new: Vector) -> bool:
-    return norm_b / (1 - norm_b) * (x_new - x).norm < EPS
+def stop(norm_b: float, x: Vector, x_new: Vector, eps: float) -> bool:
+    return norm_b / (1 - norm_b) * (x_new - x).norm < eps
 
 
-def simple_iteration(a: Matrix, v_b: Vector) -> Vector:
+def simple_iteration(a: Matrix, v_b: Vector, eps: float) -> Tuple:
     n = len(a)
 
     for i in range(4):
@@ -38,7 +38,6 @@ def simple_iteration(a: Matrix, v_b: Vector) -> Vector:
 
             if norm_b < 1:
                 break
-            print(norm_b)
 
         else:
             raise Exception('Help...')
@@ -47,8 +46,11 @@ def simple_iteration(a: Matrix, v_b: Vector) -> Vector:
     x = Vector(c)
     x_new = m_b * x + c
 
-    while not stop(norm_b, x, x_new):
+    k = 0
+    while not stop(norm_b, x, x_new, eps):
+        k += 1
+
         x = x_new
         x_new = m_b * x + c
 
-    return x_new
+    return x_new, k
